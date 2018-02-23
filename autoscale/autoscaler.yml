@@ -1,0 +1,18 @@
+poll_interval_seconds: 10
+metric_stores:
+  - name: monitoring
+    type: prometheus
+    prometheus:
+      url: http://example_prometheus:9090
+autoscale_rules:
+  - service_name: example_web
+    scale_min: 1
+    scale_max: 3
+    scale_step: 1
+    metric_store: monitoring
+    metric_query: scalar(avg(sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name ="example_web"}[30s])) by(name)  * 100))
+    scale_up_threshold: 70
+    scale_down_threshold: 50
+
+# scalar(avg(rate(flask_request_count{job="web"}[30s])))
+# scalar(avg(sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name ="example_web"}[30s])) by(name)  * 100))

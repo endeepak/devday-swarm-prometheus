@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+  api:
+    image: endeepak/demo-jukebox-api
+    ports:
+      - "8000:8000"
+      - "5000:5000"
+
+  web:
+    image: endeepak/demo-jukebox-web
+    ports:
+      - "8001:8001"
+      - "5001:5001"
+    environment:
+      JUKEBOX_API_SERVER_URL: http://api:5000

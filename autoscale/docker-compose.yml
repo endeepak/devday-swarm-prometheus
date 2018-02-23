@@ -1,0 +1,48 @@
+version: "3.4"
+
+services:
+  web:
+    image: endeepak/web-prometheus-example
+    ports:
+      - "8000:8000"
+      - "5000:5000"
+
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.0.0
+    ports:
+      - "9090:9090"
+    command: "--config.file=/etc/prometheus/prometheus.yml"
+    configs:
+      - source: prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+
+  cadvisor:
+    image: google/cadvisor:v0.25.0
+    ports:
+        - "8080:8080"
+    volumes:
+        - /:/rootfs:ro
+        - /var/run:/var/run:rw
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+        mode: global
+
+  autoscaler:
+    image: sahajsoft/docker-swarm-service-autoscaler:latest
+    command: "/etc/docker-swarm-service-autoscaler/autoscaler.yml --log-level=DEBUG"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    configs:
+      - source: autoscaler.yml
+        target: /etc/docker-swarm-service-autoscaler/autoscaler.yml
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+configs:
+  prometheus.yml:
+    file: ./prometheus.yml
+  autoscaler.yml:
+    file: ./autoscaler.yml
