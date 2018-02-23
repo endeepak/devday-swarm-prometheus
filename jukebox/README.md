@@ -7,7 +7,7 @@
 ```sh
 git clone https://github.com/endeepak/devday-swarm-prometheus
 cd jukebox
-docker stack deploy --compose-file docker-compose.yml jukebox
+docker stack deploy --compose-file jukebox-stack.yml jukebox
 ```
 
 * Visit http://localhost:5001/songs/random

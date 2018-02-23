@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'api'
+    dns_sd_configs:
+    - names:
+      - 'tasks.api'
+      type: 'A'
+      port: 8000
+
+  - job_name: 'web'
+    dns_sd_configs:
+    - names:
+      - 'tasks.web'
+      type: 'A'
+      port: 8001
+
+  - job_name: 'cadvisor'
+    dns_sd_configs:
+    - names:
+      - 'tasks.cadvisor'
+      type: 'A'
+      port: 8080
+    metric_relabel_configs:
+      - source_labels: [name]
+        regex: '^\s*$'
+        action: drop
+
+rule_files:
+  - /etc/prometheus/alertrules.yml

@@ -1,0 +1,10 @@
+groups:
+- name: example
+  rules:
+  # Alert for any container with CPU usage > 80%
+  - alert: HighCPUUsageByContianer
+    expr: sum(rate(container_cpu_usage_seconds_total[30s])) by (name) * 100 > 80
+    for: 5m
+    annotations:
+      summary: "High CPU usage on {{ $labels.name }}"
+      description: "{{ $labels.name }} is consuming more than 80% CPU. (current value: {{ $value }} %)"
